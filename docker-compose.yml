@@ -1,0 +1,36 @@
+# docker-compose.yml — P05 Clasificador de Géneros Musicales
+# Uso: docker compose up --build
+# Versión: Compose V2 (sin campo "version" obsoleto)
+
+services:
+  generos-musicales:
+    # Nombre de la imagen que se construirá
+    image: generos-musicales:latest
+
+    # Construir desde el Dockerfile del directorio actual
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Nombre del contenedor en ejecución
+    container_name: p05-generos
+
+    # Mapeo de puertos: HOST:CONTENEDOR
+    # Acceder desde el navegador en: http://localhost:8501
+    ports:
+      - "8501:8501"
+
+    # Reiniciar automáticamente si el contenedor se cae
+    restart: unless-stopped
+
+    # Variables de entorno adicionales (opcionales)
+    environment:
+      - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=50
+
+    # Healthcheck: esperar a que la app esté lista
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
